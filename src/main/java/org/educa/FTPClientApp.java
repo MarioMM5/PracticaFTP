@@ -9,29 +9,29 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class FTPClientApp {
-    private static final String SERVER = "127.0.0.1";
-    private static final int PORT = 21;
+    private static final String SERVIDOR = "127.0.0.1";
+    private static final int PUERTO = 21;
 
     public static void main(String[] args) {
         try(Scanner scanner = new Scanner(System.in)) {
             FTPClient ftpClient = new FTPClient();
-            boolean loginSuccess=false;
+            boolean loggueado=false;
             try {
-                while(!loginSuccess) {
-                    System.out.print("Ingrese nombre de usuario: ");
-                    String username = scanner.nextLine();
-                    System.out.print("Ingrese la password (No inserte nada si es anónimo): ");
-                    String password = scanner.nextLine();
+                while(!loggueado) {
+                    System.out.print("Introduzca el nombre de usuario: ");
+                    String nombreUsuario = scanner.nextLine();
+                    System.out.print("Introduzca contraseña (Si es anonimo, no introduzca nada): ");
+                    String pass = scanner.nextLine();
 
-                    ftpClient.connect(SERVER, PORT);
-                    loginSuccess = ftpClient.login(username, password);
+                    ftpClient.connect(SERVIDOR, PUERTO);
+                    loggueado = ftpClient.login(nombreUsuario, pass);
 
-                    if (loginSuccess) {
-                        System.out.println("Conexión exitosa como: " + username);
-                        menuOperaciones(ftpClient, scanner, username);
+                    if (loggueado) {
+                        System.out.println("Bienvenido: " + nombreUsuario);
+                        menuOperaciones(ftpClient, scanner, nombreUsuario);
                         ftpClient.logout();
                     } else {
-                        System.out.println("Error al conectar. Verifica las credenciales.");
+                        System.out.println("Ha introducido de manera incorrecta las credenciales, intentelo de nuevo.");
                     }
                 }
 
@@ -44,8 +44,8 @@ public class FTPClientApp {
 
     private static void menuOperaciones(FTPClient ftpClient, Scanner scanner, String username) throws IOException {
         while (true) {
-            System.out.println("\n Menú de operaciones:");
-            System.out.println("1. Listar archivos en el servidor");
+            System.out.println("\n Menú:");
+            System.out.println("1. Listar archivos");
             System.out.println("2. Descargar archivo");
             System.out.println("3. Subir archivo");
             System.out.println("4. Salir");
@@ -58,7 +58,7 @@ public class FTPClientApp {
                     listarArchivos(ftpClient);
                     break;
                 case 2:
-                    System.out.print("Nombre del archivo a descargar: ");
+                    System.out.print("Introduzca el nombre del archivo a descargar: ");
                     String archivoDescargar = scanner.nextLine();
                     descargarArchivo(ftpClient, archivoDescargar);
                     break;
@@ -81,7 +81,7 @@ public class FTPClientApp {
 
     private static void listarArchivos(FTPClient ftpClient) throws IOException {
         FTPFile[] archivos = ftpClient.listFiles();
-        System.out.println("Archivos en el servidor:");
+        System.out.println("Archivos:");
         for (FTPFile archivo : archivos) {
             System.out.println("- " + archivo.getName());
         }
