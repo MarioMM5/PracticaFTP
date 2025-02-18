@@ -28,7 +28,7 @@ public class FTPClientApp {
 
                     if (loggueado) {
                         System.out.println("Bienvenido: " + nombreUsuario);
-                        menuOperaciones(ftpClient, scanner, nombreUsuario);
+                        menu(ftpClient, scanner, nombreUsuario);
                         ftpClient.logout();
                     } else {
                         System.out.println("Ha introducido de manera incorrecta las credenciales, intentelo de nuevo.");
@@ -42,7 +42,7 @@ public class FTPClientApp {
         }
     }
 
-    private static void menuOperaciones(FTPClient ftpClient, Scanner scanner, String username) throws IOException {
+    private static void menu(FTPClient ftpClient, Scanner scanner, String username) throws IOException {
         while (true) {
             System.out.println("\n Menú:");
             System.out.println("1. Listar archivos");
@@ -55,18 +55,18 @@ public class FTPClientApp {
 
             switch (opcion) {
                 case 1:
-                    listarArchivos(ftpClient);
+                    listaArchivos(ftpClient);
                     break;
                 case 2:
                     System.out.print("Introduzca el nombre del archivo a descargar: ");
                     String archivoDescargar = scanner.nextLine();
-                    descargarArchivo(ftpClient, archivoDescargar);
+                    descargar(ftpClient, archivoDescargar);
                     break;
                 case 3:
                     if (!username.equalsIgnoreCase("anonimo")) { // Solo autenticados pueden subir
                         System.out.print("Nombre del archivo a subir: ");
                         String archivoSubir = scanner.nextLine();
-                        subirArchivo(ftpClient, archivoSubir);
+                        subirFichero(ftpClient, archivoSubir);
                     } else {
                         System.err.println("Los usuarios anónimos no pueden subir archivos.");
                     }
@@ -79,7 +79,7 @@ public class FTPClientApp {
         }
     }
 
-    private static void listarArchivos(FTPClient ftpClient) throws IOException {
+    private static void listaArchivos(FTPClient ftpClient) throws IOException {
         FTPFile[] archivos = ftpClient.listFiles();
         System.out.println("Archivos:");
         for (FTPFile archivo : archivos) {
@@ -87,7 +87,7 @@ public class FTPClientApp {
         }
     }
 
-    private static void subirArchivo(FTPClient ftpClient, String localFilePath) {
+    private static void subirFichero(FTPClient ftpClient, String localFilePath) {
         try {
             File archivo = new File(localFilePath);
             if (!archivo.exists()) {
@@ -107,8 +107,7 @@ public class FTPClientApp {
         }
     }
 
-
-    private static void descargarArchivo(FTPClient ftpClient, String remoteFilePath) throws IOException {
+    private static void descargar(FTPClient ftpClient, String remoteFilePath) throws IOException {
         File archivoLocal = new File(remoteFilePath);
         FileOutputStream fos = new FileOutputStream(archivoLocal);
         boolean descargado = ftpClient.retrieveFile(remoteFilePath, fos);
